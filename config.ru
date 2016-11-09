@@ -1,11 +1,27 @@
 require 'rubygems'
 require 'bundler/setup'
+require 'routemaster/client'
 require 'routemaster/receiver'
 require 'dotenv'
 require 'sinatra'
 require 'pry'
 
 Dotenv.load!
+
+subscriptions = ENV.fetch('TOPIC_SUBSCRIPTIONS', '').split(',')
+if subscriptions.any?
+  routemaster = Routemaster::Client.new(
+    url: ENV.fetch('ROUTEMASTER_URL'),
+    uuid: ENV.fetch('ROUTEMASTER_UUID', 'demo'),
+  )
+
+  routemaster.subscribe(
+    topics: subscriptions,
+    callback: ENV.fetch('CALLBACK_URL'),
+    uuid: ENV.fetch('CLIENT_UUID', 'demo'),
+    max: 1
+  )
+end
 
 class Handler
   def on_events(events)
