@@ -18,8 +18,7 @@ if subscriptions.any?
   routemaster.subscribe(
     topics: subscriptions,
     callback: ENV.fetch('CALLBACK_URL'),
-    uuid: ENV.fetch('CLIENT_UUID', 'demo'),
-    max: 1
+    uuid: ENV.fetch('CLIENT_UUID', 'demo')
   )
 end
 
