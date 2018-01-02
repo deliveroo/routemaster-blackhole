@@ -13,3 +13,4 @@ gem 'dotenv'
 gem 'routemaster-client'
 
 gem 'data-sink-client'
+gem 'oj'
