@@ -11,3 +11,5 @@ gem 'pry-nav'
 gem 'dotenv'
 
 gem 'routemaster-client'
+
+gem 'data-sink-client'
