@@ -5,10 +5,14 @@ require 'dotenv'
 require 'sinatra'
 require 'pry'
 require 'data_sink_client'
+require 'concurrent'
 
 Dotenv.load!
 
-SUBSCRIBER_NAME = 'routemaster-blackhole'
+SUBSCRIBER_NAME                = 'routemaster-blackhole'
+DATASINK_CONCURRENCY           = ENV.fetch('DATASINK_CONCURRENCY', 10).to_i
+DATASINK_CONCURRENCY_MAX_QUEUE = ENV.fetch('DATASINK_CONCURRENCY_MAX_QUEUE', 100).to_i
+DATASINK_CONCURRENCY_OPTIONS   = { max_queue: DATASINK_CONCURRENCY_MAX_QUEUE, fallback_policy: :caller_runs }
 
 class Handler
   def on_events(events)
@@ -24,15 +28,21 @@ class Handler
 
   def send_to_data_sink(events)
     return unless data_sink_enabled?
+    pool        = Concurrent::FixedThreadPool.new(DATASINK_CONCURRENCY, DATASINK_CONCURRENCY_OPTIONS)
+    received_at = (Time.now.utc.to_f * 1e3).to_i
+
     events.map do |event|
-      Thread.new do
+      pool.post do
         event = event.merge(
           subscriber: SUBSCRIBER_NAME,
-          received_at: (Time.now.utc.to_f * 1e3).to_i
+          received_at: received_at
         )
         DataSinkClient.instance.post(event)
       end
-    end.map(&:join)
+    end
+    pool.wait_for_termination
+  ensure
+    pool.shutdown
   end
 
   def data_sink_enabled?

@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     coderay (1.1.2)
+    concurrent-ruby (1.0.5)
     data-sink-client (0.1.2)
       excon (~> 0.55.0)
       faraday (> 0.10.0)
@@ -48,6 +49,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  concurrent-ruby
   data-sink-client
   dotenv
   foreman

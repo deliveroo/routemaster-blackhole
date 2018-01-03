@@ -14,3 +14,4 @@ gem 'routemaster-client'
 
 gem 'data-sink-client'
 gem 'oj'
+gem 'concurrent-ruby'
