@@ -11,7 +11,8 @@ gem 'pry-nav'
 gem 'dotenv'
 
 gem 'routemaster-client'
+gem 'routemaster-drain'
 
 gem 'data-sink-client'
-gem 'oj'
+gem 'oj', '~> 2.17'
 gem 'concurrent-ruby'

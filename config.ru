@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
-require 'routemaster/receiver'
+require 'routemaster/client'
+require 'routemaster/drain/basic'
 require 'dotenv'
 require 'sinatra'
 require 'pry'
@@ -14,20 +15,24 @@ DATASINK_CONCURRENCY           = ENV.fetch('DATASINK_CONCURRENCY', 10).to_i
 DATASINK_CONCURRENCY_MAX_QUEUE = ENV.fetch('DATASINK_CONCURRENCY_MAX_QUEUE', 100).to_i
 DATASINK_CONCURRENCY_OPTIONS   = { max_queue: DATASINK_CONCURRENCY_MAX_QUEUE, fallback_policy: :caller_runs }
 
-class Handler
-  def on_events(events)
-    events.each do |event|
-      event.keys.each { |k| event[k.to_sym] = event.delete(k) }
-      $stderr.write("%<topic>-12s %<type>-12s %<url>s %<t>s\n" % event)
-      $stderr.flush
+class ApplicationDrain < Routemaster::Drain::Basic
+  def initialize(_)
+    super()
+
+    on(:events_received) do |events|
+      events.each do |event|
+        event = event.to_h
+        event.keys.each { |k| event[k.to_sym] = event.delete(k) }
+        $stderr.write("%<topic>-12s %<type>-12s %<url>s %<t>s\n" % event)
+        $stderr.flush
+      end
+      send_to_data_sink(events) if data_sink_enabled?
     end
-    send_to_data_sink(events)
   end
 
   private
 
   def send_to_data_sink(events)
-    return unless data_sink_enabled?
     pool        = Concurrent::FixedThreadPool.new(DATASINK_CONCURRENCY, DATASINK_CONCURRENCY_OPTIONS)
     received_at = (Time.now.utc.to_f * 1e3).to_i
 
@@ -40,6 +45,7 @@ class Handler
         DataSinkClient.instance.post(event)
       end
     end
+    pool.shutdown
     pool.wait_for_termination
   ensure
     pool.shutdown
@@ -50,10 +56,8 @@ class Handler
   end
 end
 
-use Routemaster::Receiver, {
-  path:    '/events',
-  uuid:    ENV.fetch('CLIENT_UUID', 'demo'),
-  handler: Handler.new
-}
+map '/events' do
+  use ApplicationDrain
+end
 
-run Sinatra::Base
+run Sinatra::Application
