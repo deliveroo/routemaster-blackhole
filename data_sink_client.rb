@@ -1,8 +1,7 @@
 require 'oj'
+require 'data-sink-client'
 
 class DataSinkClient
-  include Singleton
-
   def initialize
     options = {
       user: ENV.fetch('DATASINK_USER'),
@@ -10,7 +9,7 @@ class DataSinkClient
       url:  ENV.fetch('DATASINK_URL')
     }
 
-    @client = DataSink::Client.new(options)
+    @client = ::DataSink::Client.new(options)
     @stream = ENV.fetch('DATASINK_STREAM')
   end
 

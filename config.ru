@@ -35,14 +35,15 @@ class ApplicationDrain < Routemaster::Drain::Basic
   def send_to_data_sink(events)
     pool        = Concurrent::FixedThreadPool.new(DATASINK_CONCURRENCY, DATASINK_CONCURRENCY_OPTIONS)
     received_at = (Time.now.utc.to_f * 1e3).to_i
+    client      = DataSinkClient.new
 
-    events.map do |event|
+    events.each do |event|
       pool.post do
         event = event.merge(
           subscriber: SUBSCRIBER_NAME,
           received_at: received_at
         )
-        DataSinkClient.instance.post(event)
+        client.post(event)
       end
     end
     pool.shutdown
