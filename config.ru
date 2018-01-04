@@ -43,7 +43,7 @@ class ApplicationDrain < Routemaster::Drain::Basic
           subscriber: SUBSCRIBER_NAME,
           received_at: received_at
         )
-        client.post(event)
+        client.post(event.to_h)
       end
     end
     pool.shutdown
