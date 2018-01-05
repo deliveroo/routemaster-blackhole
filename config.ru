@@ -20,12 +20,7 @@ class ApplicationDrain < Routemaster::Drain::Basic
     super()
 
     on(:events_received) do |events|
-      events.each do |event|
-        event = event.to_h
-        event.keys.each { |k| event[k.to_sym] = event.delete(k) }
-        $stderr.write("%<topic>-12s %<type>-12s %<url>s %<t>s\n" % event)
-        $stderr.flush
-      end
+      send_to_stderr(events)    if stderr_enabled?
       send_to_data_sink(events) if data_sink_enabled?
     end
   end
@@ -50,6 +45,19 @@ class ApplicationDrain < Routemaster::Drain::Basic
     pool.wait_for_termination
   ensure
     pool.shutdown
+  end
+
+  def send_to_stderr(events)
+    events.each do |event|
+      event = event.to_h
+      event.keys.each { |k| event[k.to_sym] = event.delete(k) }
+      $stderr.write("%<topic>-12s %<type>-12s %<url>s %<t>s\n" % event)
+      $stderr.flush
+    end
+  end
+
+  def stderr_enabled?
+    ENV.fetch('STDERR_ENABLED', '0') == '1'
   end
 
   def data_sink_enabled?
