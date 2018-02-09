@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.4.2'
+ruby(File.read(File.expand_path('../.ruby-version', __FILE__)).chomp)
 
 gem 'foreman'
 gem 'unicorn'
