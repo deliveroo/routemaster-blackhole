@@ -16,3 +16,5 @@ gem 'routemaster-drain'
 gem 'data-sink-client'
 gem 'oj', '~> 2.17'
 gem 'concurrent-ruby'
+
+gem 'newrelic_rpm'
