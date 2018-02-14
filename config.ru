@@ -7,6 +7,7 @@ require 'sinatra'
 require 'pry'
 require 'data_sink_client'
 require 'concurrent'
+require 'newrelic_rpm'
 
 Dotenv.load!
 
