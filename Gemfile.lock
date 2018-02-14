@@ -36,6 +36,7 @@ GEM
     moneta (1.0.0)
     multipart-post (2.0.0)
     mustermann (1.0.1)
+    newrelic_rpm (4.8.0.341)
     oj (2.18.5)
     pry (0.10.4)
       coderay (~> 1.1.0)
@@ -94,6 +95,7 @@ DEPENDENCIES
   data-sink-client
   dotenv
   foreman
+  newrelic_rpm
   oj (~> 2.17)
   pry
   pry-nav
