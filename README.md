@@ -1,4 +1,4 @@
-routemaster_blackhole
+Routemaster Blackhole
 =====================
 
 A Routemaster subscriber that gobbles events
