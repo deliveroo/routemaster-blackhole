@@ -68,6 +68,10 @@ class ApplicationDrain < Routemaster::Drain::Basic
   end
 end
 
+get '/health' do
+  'OK'
+end
+
 map '/events' do
   use ApplicationDrain
 end
