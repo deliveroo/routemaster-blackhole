@@ -1,0 +1,12 @@
+version: '1'
+
+services:
+  web:
+    containerDefinitions:
+      web:
+        cpu: 2048 # equivalent to 2 vCPUs
+        memory: 2048 # in MB
+        essential: true
+        command: "env PORT=3000 bundle exec foreman start web"
+        portMappings:
+          - containerPort: 3000

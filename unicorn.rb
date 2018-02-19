@@ -1,6 +1,14 @@
-worker_processes Integer(ENV.fetch('UNICORN_WORKERS', 10))
+default_worker_count = 10
+worker_count = ENV['UNICORN_WORKERS'].to_i
+worker_processes(worker_count == 0 ? default_worker_count : worker_count)
 
-timeout Integer(ENV.fetch('UNICORN_TIMEOUT', 5))
+default_timeout_s = 5
+timeout_s = ENV['UNICORN_TIMEOUT'].to_i
+timeout(timeout_s == 0 ? default_timeout_s : timeout_s)
+
+default_port_number = 3000
+port_number = ENV['PORT'].to_i
+listen("0.0.0.0:#{port_number == 0 ? default_port_number : port_number}")
 
 preload_app true
 
