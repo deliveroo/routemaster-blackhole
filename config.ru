@@ -7,13 +7,16 @@ require 'sinatra'
 require 'pry'
 require 'data_sink_client'
 require 'concurrent'
+require 'newrelic_rpm'
 
 Dotenv.load!
 
-SUBSCRIBER_NAME                = 'routemaster-blackhole'
-DATASINK_CONCURRENCY           = ENV.fetch('DATASINK_CONCURRENCY', 10).to_i
-DATASINK_CONCURRENCY_MAX_QUEUE = ENV.fetch('DATASINK_CONCURRENCY_MAX_QUEUE', 100).to_i
-DATASINK_CONCURRENCY_OPTIONS   = { max_queue: DATASINK_CONCURRENCY_MAX_QUEUE, fallback_policy: :caller_runs }
+SUBSCRIBER_NAME = 'routemaster-blackhole'.freeze
+DATASINK_CONCURRENCY = ENV.fetch('DATASINK_CONCURRENCY', 10).to_i
+DATASINK_CONCURRENCY_OPTIONS = {
+  max_queue: ENV.fetch('DATASINK_CONCURRENCY_MAX_QUEUE', 100).to_i,
+  fallback_policy: :caller_runs
+}.freeze
 
 class ApplicationDrain < Routemaster::Drain::Basic
   def initialize(_)
@@ -63,6 +66,10 @@ class ApplicationDrain < Routemaster::Drain::Basic
   def data_sink_enabled?
     ENV.fetch('DATASINK_ENABLED', '0') == '1'
   end
+end
+
+get '/health' do
+  'OK'
 end
 
 map '/events' do

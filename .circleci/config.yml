@@ -1,0 +1,58 @@
+docker_version: &docker_version 17.06.0-ce
+
+defaults: &defaults
+  working_directory: /routemaster-blackhole
+  docker:
+    - image: deliveroo/circleci:0.1.8
+
+version: 2
+
+jobs:
+  push_image: &push_image
+    <<: *defaults
+
+    steps:
+      - setup_remote_docker:
+          reusable: true
+          version: *docker_version
+      - checkout
+      - run:
+          name: Make sure we are on HEAD
+          command: ensure_head
+      - run:
+          name: Build image
+          command: docker build --tag routemaster-blackhole:${CIRCLE_SHA1} .
+      - run:
+          name: Push image to ECR
+          command: |
+            `print_env ${TARGET}`
+            push_image_to_ecr \
+              --image-name routemaster-blackhole \
+              --ecr-repo $AWS_ECR_REPO_URL \
+              --aws-region $AWS_REGION
+
+  push_image_staging:
+    <<: *push_image
+    environment:
+      - TARGET: staging
+
+  push_image_production:
+    <<: *push_image
+    environment:
+      - TARGET: production
+
+
+workflows:
+  version: 2
+  test_and_build:
+    jobs:
+      - push_image_staging:
+          filters:
+            branches:
+              only:
+                - staging
+      - push_image_production:
+          filters:
+            branches:
+              only:
+                - master
