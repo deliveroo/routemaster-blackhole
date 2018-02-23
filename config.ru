@@ -13,20 +13,6 @@ require 'data_sink_client'
 require 'concurrent'
 require 'newrelic_rpm'
 
-require 'routemaster/middleware/authenticate'
-module Routemaster::Middleware
-  class Authenticate
-    private
-
-    def _valid_auth?(env)
-      user = env['HTTP_AUTHORIZATION'].gsub(/^Basic /, '')
-      token = Base64.decode64(user).split(':').first
-      puts "user: #{user}, token: #{token}, uuid set: #{@uuid}"
-      @uuid.include?(token)
-    end
-  end
-end
-
 SUBSCRIBER_NAME = 'routemaster-blackhole'.freeze
 DATASINK_CONCURRENCY = ENV.fetch('DATASINK_CONCURRENCY', 10).to_i
 DATASINK_CONCURRENCY_OPTIONS = {
