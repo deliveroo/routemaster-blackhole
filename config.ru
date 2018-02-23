@@ -1,15 +1,17 @@
+if File.exists?('.env.development')
+  require 'dotenv'
+  Dotenv.load!('.env.development')
+end
+
 require 'rubygems'
 require 'bundler/setup'
 require 'routemaster/client'
 require 'routemaster/drain/basic'
-require 'dotenv'
 require 'sinatra'
 require 'pry'
 require 'data_sink_client'
 require 'concurrent'
 require 'newrelic_rpm'
-
-Dotenv.load!
 
 require 'routemaster/middleware/authenticate'
 module Routemaster::Middleware
