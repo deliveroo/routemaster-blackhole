@@ -12,13 +12,16 @@ require 'newrelic_rpm'
 Dotenv.load!
 
 require 'routemaster/middleware/authenticate'
-
 module Routemaster::Middleware
-  def _valid_auth?(env)
-    user = env['HTTP_AUTHORIZATION'].gsub(/^Basic /, '')
-    token = Base64.decode64(user).split(':').first
-    puts "user: #{user}, token: #{token}"
-    @uuid.include?(token)
+  class Authenticate
+    private
+
+    def _valid_auth?(env)
+      user = env['HTTP_AUTHORIZATION'].gsub(/^Basic /, '')
+      token = Base64.decode64(user).split(':').first
+      puts "user: #{user}, token: #{token}"
+      @uuid.include?(token)
+    end
   end
 end
 
