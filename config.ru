@@ -19,7 +19,7 @@ module Routemaster::Middleware
     def _valid_auth?(env)
       user = env['HTTP_AUTHORIZATION'].gsub(/^Basic /, '')
       token = Base64.decode64(user).split(':').first
-      puts "user: #{user}, token: #{token}"
+      puts "user: #{user}, token: #{token}, uuid set: #{@uuid}"
       @uuid.include?(token)
     end
   end
