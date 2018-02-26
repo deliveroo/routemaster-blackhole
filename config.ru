@@ -1,15 +1,17 @@
+if File.exists?('.env.development')
+  require 'dotenv'
+  Dotenv.load!('.env.development')
+end
+
 require 'rubygems'
 require 'bundler/setup'
 require 'routemaster/client'
 require 'routemaster/drain/basic'
-require 'dotenv'
 require 'sinatra'
 require 'pry'
 require 'data_sink_client'
 require 'concurrent'
 require 'newrelic_rpm'
-
-Dotenv.load!
 
 SUBSCRIBER_NAME = 'routemaster-blackhole'.freeze
 DATASINK_CONCURRENCY = ENV.fetch('DATASINK_CONCURRENCY', 10).to_i
