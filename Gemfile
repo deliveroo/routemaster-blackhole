@@ -4,7 +4,7 @@ ruby(File.read(File.expand_path('../.ruby-version', __FILE__)).chomp)
 
 gem 'foreman'
 gem 'unicorn'
-gem 'sinatra'
+gem 'sinatra', '~> 2.0.1'
 gem 'pry'
 gem 'pry-nav'
 
