@@ -5,7 +5,7 @@ services:
     containerDefinitions:
       web:
         cpu: 512
-        memory: 1024 # in MB
+        memory: 512 # in MB
         essential: true
         command: "env PORT=3000 bundle exec foreman start web"
         portMappings:
