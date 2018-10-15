@@ -1,4 +1,4 @@
-FROM deliveroo/hopper-runner:1.0.4 as hopper-runner
+FROM deliveroo/hopper-runner:1.4.0 as hopper-runner
 FROM ruby:2.5.0 as production
 
 # App home directory and app user can be injected through build params.
