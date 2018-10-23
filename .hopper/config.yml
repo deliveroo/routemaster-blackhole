@@ -20,7 +20,3 @@ services:
         command: "env PORT=3000 bundle exec foreman start web"
         healthCheck:
           command: [ "CMD-SHELL", "true" ]
-          interval: 30
-          timeout: 5
-          retries: 3
-          startPeriod: 120
