@@ -10,3 +10,11 @@ services:
         command: "env PORT=3000 bundle exec foreman start web"
         portMappings:
           - containerPort: 3000
+
+  # this wont do any work. it exists as an experiment. to be removed.
+  worker:
+    containerDefinitions:
+      worker:
+        cpu: 512
+        memory: 512 # in MB
+        command: "env PORT=3000 bundle exec foreman start web"
