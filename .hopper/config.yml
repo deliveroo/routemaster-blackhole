@@ -19,4 +19,4 @@ services:
         memory: 512 # in MB
         command: "env PORT=3000 bundle exec foreman start web"
         healthCheck:
-          command: [ 'CMD-SHELL', 'true' ]
+          command: [ 'CMD-SHELL', 'false' ]
